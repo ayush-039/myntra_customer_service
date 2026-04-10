@@ -9,8 +9,8 @@ from app.services.tts import get_tts
 from app.processors.memory_processor import MemoryProcessor
 from pipecat.processors.aggregators.openai_llm_context import OpenAILLMContext
 # from pipecat.transports.network.web_rtc import SmallWebRTCTransport, SmallWebRTCTransportParams
-from pipecat.transports.services.livekit import LiveKitTransport, LiveKitParams
-from pipecat.transports.services.daily import DailyTransport, DailyParams
+from pipecat.transports.livekit.transport import LiveKitTransport, LiveKitParams
+from pipecat.transports.daily.transport import DailyTransport, DailyParams
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from app.config.settings import settings
 
@@ -24,29 +24,34 @@ from app.config.settings import settings
 #     )
 # )
 
-async def create_pipeline():
-
-    # ✅ 2. Call the functions to initialize your services
+async def create_pipeline(room_url: str, token: str):
+    # Initialize your services
     stt = get_stt()
     llm = get_llm()
     tts = get_tts()
 
-    
-    
-
-    room_name = "myntra_final"
-
-    transport = LiveKitTransport(
-        room_name=room_name,
-        url=settings.LIVEKIT_URL,
-        token=settings.LIVEKIT_TOKEN,
-        params=LiveKitParams(
-            audio_out_enabled=True,
+    # Pass the dynamic URL and token to DailyTransport
+    transport = DailyTransport(
+        room_url,
+        token,
+        "Myntra Bot",
+        DailyParams(
             audio_in_enabled=True,
-            vad_analyzer=SileroVADAnalyzer(), # Add this to detect your voice
-            vad_enabled=True
-        )
+            audio_out_enabled=True,
+            transcription_enabled=True,
+        ),
     )
+    # transport = LiveKitTransport(
+    #     room_name=room_name,
+    #     url=settings.LIVEKIT_URL,
+    #     token=settings.LIVEKIT_TOKEN,
+    #     params=LiveKitParams(
+    #         audio_out_enabled=True,
+    #         audio_in_enabled=True,
+    #         vad_analyzer=SileroVADAnalyzer(), # Add this to detect your voice
+    #         vad_enabled=True
+    #     )
+    # )
     # messages = [
     #     {
     #         "role": "system",

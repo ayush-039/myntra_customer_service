@@ -8,9 +8,13 @@ class Settings:
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
     SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
-    LIVEKIT_URL=os.getenv("LIVEKIT_URL")
-    LIVEKIT_API_KEY=os.getenv("LIVEKIT_API_KEY")
-    LIVEKIT_API_SECRET=os.getenv("LIVEKIT_API_SECRET")
-    LIVEKIT_TOKEN=os.getenv("LIVEKIT_TOKEN")
+    
+    # Daily API
+    DAILY_API_KEY = os.getenv("DAILY_API_KEY")
+    
+    # Twilio API
+    TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+    TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+    TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 
 settings = Settings()
