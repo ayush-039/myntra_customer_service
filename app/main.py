@@ -1,3 +1,4 @@
+import asyncio
 import time
 import aiohttp
 import logging
@@ -103,8 +104,22 @@ async def run_bot(room_url: str, token: str):
     """Background task: run the Pipecat pipeline for this call."""
     try:
         logger.info("Starting bot for room: %s", room_url)
-        pipeline = await create_pipeline(room_url, token)
+        pipeline, transport, task_holder = await create_pipeline(room_url, token)
         task = PipelineTask(pipeline)
+
+        # Give the event callbacks access to the task so they can cancel it
+        task_holder["pipeline_task"] = task
+
+        # No-answer timeout: cancel pipeline if nobody picks up within N seconds
+        async def no_answer_timeout():
+            from app.pipeline import NO_ANSWER_TIMEOUT
+            await asyncio.sleep(NO_ANSWER_TIMEOUT)
+            logger.warning("No participant joined within %ds — ending call", NO_ANSWER_TIMEOUT)
+            await task.cancel()
+
+        timer = asyncio.ensure_future(no_answer_timeout())
+        task_holder["no_answer_timer"] = timer
+
         runner = PipelineRunner()
         await runner.run(task)
         logger.info("Bot finished for room: %s", room_url)
@@ -169,4 +184,4 @@ async def handle_call_out(to_number: str, background_tasks: BackgroundTasks):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
