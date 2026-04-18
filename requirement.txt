@@ -1,6 +1,18 @@
 pipecat-ai
-deepgram-sdk
-openai
-elevenlabs
-python-dotenv
 sounddevice
+
+# Telephony and WebRTC
+twilio>=9.0.0
+daily-python>=0.11.0
+pipecat-ai>=0.0.107
+
+# Server and Orchestration
+fastapi
+uvicorn
+python-dotenv
+requests
+
+# AI Services (Commonly used with Pipecat)
+openai
+deepgram-sdk>=3.0.0
+elevenlabs

@@ -1,12 +1,11 @@
-from pipecat.services.elevenlabs.tts import ElevenLabsTTSService
+from pipecat.services.sarvam.tts import SarvamTTSService
 from app.config.settings import settings
 
 def get_tts():
-    return ElevenLabsTTSService(
-        api_key=settings.ELEVENLABS_API_KEY,
-        # Pipecat expects ElevenLabs voice *IDs* (Settings.voice).
-        # Passing `voice=` is ignored by current Pipecat versions, leaving voice_id=None.
-        settings=ElevenLabsTTSService.Settings(
-            voice="21m00Tcm4TlvDq8ikWAM"  # ✅ REAL Rachel voice ID
-        )
+    return SarvamTTSService(
+        api_key=settings.SARVAM_API_KEY,
+        target_language_code="eng-IN",
+        model="bulbul:v3",
+        speaker="aditya"  # Clear and articulate voice for teaching
     )
+
